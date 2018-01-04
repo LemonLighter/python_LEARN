@@ -6,6 +6,7 @@ This is a temporary script file.
 """
 import urllib2
 import re
+import itertools
 
 " 下载网页重试下载 "
 def download(url,user_agent='wswp',num_retries=2):
@@ -31,5 +32,13 @@ def crawl_sitemap(url):
     #提取sitemap链接
     for link in links:
         html=download(link)
+
+for page in itertools.count(1):
+    url='http://example.webscraping.com/view/-%d' % page
+    html=download(url)
+    if html is None:
+        break
+    else :
+        pass
 
 crawl_sitemap('http://example.webscraping.com/sitemap.xml')
