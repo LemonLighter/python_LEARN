@@ -32,13 +32,32 @@ def crawl_sitemap(url):
     #提取sitemap链接
     for link in links:
         html=download(link)
+#
+#max_errors=5
+#num_errors=0
+#for page in itertools.count(1):  
+#    #itertools可以提供操作迭代器  count(1)可以生成无线迭代器 一直产生整数
+#    url='http://example.webscraping.com/view/-%d' % page
+#    html=download(url)
+#    if html is None:
+#        num_errors+=1
+#        if num_errors==max_errors:
+#            break
+#    else :
+#        num_errors=0
 
-for page in itertools.count(1):
-    url='http://example.webscraping.com/view/-%d' % page
-    html=download(url)
-    if html is None:
-        break
-    else :
-        pass
+def link_crawler(seed_url,link_regex):
+    crawl_queue=[seed_url]
+    while crawl_queue:
+        url=crawl_queue.pop()
+        html=download(url)
+        for link in get_links(html):
+            if re.match(link_regex,link):
+                crawl_queue.append(link)
 
+def get_links(html):
+    webpage_regex=re.compile('<a[^>]+href=["\'](.*?)["\']',re.IGNORECASE)
+    return webpage_regex.findall(html)
+
+link_crawler('http://example.webscraping.com','/(index|view)')
 crawl_sitemap('http://example.webscraping.com/sitemap.xml')
