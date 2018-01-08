@@ -137,8 +137,8 @@ def get_links(html):
     return webpage_regex.findall(html)
 
 seed_url='http://example.webscraping.com/index'
-link_regex='/(index|view)'
-link_crawler(seed_url,link_regex,max_depth=1)
+link_regex='/places/default/(index|view)'
+link_crawler(seed_url,link_regex,max_depth=2)
 #if __name__ == '__main__':
    # link_crawler('http://example.webscraping.com', '/(index|view)', delay=0, num_retries=1, user_agent='BadCrawler')
    # link_crawler('http://example.webscraping.com', '/(index|view)', delay=0, num_retries=1, max_depth=1)
