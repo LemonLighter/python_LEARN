@@ -30,7 +30,7 @@ def download(url,user_agent='wswp',proxy=None,num_retries=2):
         if num_retries>0:
             if hasattr(e,'code') and 500<=e.code<600:
                 #对于错误在500-600之间的代码进行重试下载
-                return download(url,user_agent,num_retries-1)
+                return download(url,user_agent,proxy=proxy,num_retries-1)
     return html
 
 
@@ -55,7 +55,9 @@ def crawl_sitemap(url):
 #    else :
 #        num_errors=0
 
-def link_crawler(seed_url,link_regex):
+def link_crawler(seed_url,link_regex,max_depth=2):
+    max_depth=2
+    seen={}
     crawl_queue=[seed_url]
     seen=set(crawl_queue)
     rp=robotparser.RobotFileParser()
@@ -66,12 +68,15 @@ def link_crawler(seed_url,link_regex):
         #if rp.can_fetch(): ？？？？？
             #检测指定用户代理是否允许访问网页
         html=download(url)
-        for link in get_links(html):
-            if re.match(link_regex,link):
-                link=urlparse.urljoin(seed_url,link)
-                if link not in seen:
-                    seen.add(link)
-                    crawl_queue.append(link)
+        depth=seen[url]
+        if depth!=max_depth:
+            for link in get_links(html):
+                if re.match(link_regex,link):
+                    link=urlparse.urljoin(seed_url,link)
+                    if link not in seen:
+                        seen[link]=depth+1  #避免陷入爬虫陷阱
+                        seen.add(link)
+                        crawl_queue.append(link)
 
 def get_links(html):
     webpage_regex=re.compile('<a[^>]+href=["\'](.*?)["\']',re.IGNORECASE)
