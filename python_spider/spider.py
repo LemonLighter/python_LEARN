@@ -9,6 +9,7 @@ import re
 import itertools
 import urlparse
 import robotparser
+from bs4 import BeautifulSoup
 
 
 " 下载网页重试下载 "
@@ -30,9 +31,23 @@ def download(url,user_agent='wswp',proxy=None,num_retries=2):
         if num_retries>0:
             if hasattr(e,'code') and 500<=e.code<600:
                 #对于错误在500-600之间的代码进行重试下载
-                return download(url,user_agent,proxy=proxy,num_retries-1)
+                return download(url,user_agent,proxy=proxy,num_retries=num_retries-1)
     return html
 
+
+url='http://example.webscraping.com/places/view/United-Kingdom-239'
+html=download(url)
+soup=BeautifulSoup(html)
+tr=soup.find(attrs={'id':'places_area__row'})
+td=tr.find(attrs={'class':'w2p_fw'})
+area=td.text
+print area
+
+
+url ='http://example.webscraping.com/places/default/view/United-Kingdom-239'
+html=download(url)
+#re.findall('<td class="w2p_fw">(.*?)</td>',html)[1]
+re.findall('<tr id="places_area__row"><td class="w2p_fl"><label for="places_area" id="places_area__label">Area: </label></td><td class="w2p_fw">(.*?)</td>',html)
 
 def crawl_sitemap(url):
     #download the sitemap file
@@ -97,6 +112,6 @@ class Throttle:
             if sleep_secs>0:
                 time.sleep(sleep_secs)
         self.domains(domain)=datetime.datetime.now()
-                                    
-link_crawler('http://example.webscraping.com','/(index|view)')
-crawl_sitemap('http://example.webscraping.com/sitemap.xml')
+#                                    
+#link_crawler('http://example.webscraping.com','/(index|view)')
+#crawl_sitemap('http://example.webscraping.com/sitemap.xml')
