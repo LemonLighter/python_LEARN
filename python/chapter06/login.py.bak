@@ -14,7 +14,7 @@ import lxml.html
 
 LOGIN_EMAIL = 'example@webscraping.com'
 LOGIN_PASSWORD = 'example'
-LOGIN_URL = 'http://example.webscraping.com/places/default/user/login'
+LOGIN_URL = 'http://example.webscraping.com/user/login'
 
 
 def login_basic():
@@ -24,7 +24,7 @@ def login_basic():
     encoded_data = urllib.urlencode(data)
     request = urllib2.Request(LOGIN_URL, encoded_data)
     response = urllib2.urlopen(request)
-    print response.geturl()
+    print(response.geturl())
 
 
 def login_formkey():
@@ -37,7 +37,7 @@ def login_formkey():
     encoded_data = urllib.urlencode(data)
     request = urllib2.Request(LOGIN_URL, encoded_data)
     response = urllib2.urlopen(request)
-    print response.geturl()
+    print(response.geturl())
 
 
 def login_cookies():
@@ -52,7 +52,7 @@ def login_cookies():
     encoded_data = urllib.urlencode(data)
     request = urllib2.Request(LOGIN_URL, encoded_data)
     response = opener.open(request)
-    print response.geturl()
+    print(response.geturl())
     return opener
 
 
@@ -65,7 +65,7 @@ def login_firefox():
     html = opener.open(COUNTRY_URL).read()
 
     tree = lxml.html.fromstring(html)
-    print tree.cssselect('ul#navbar li a')[0].text_content()
+    print(tree.cssselect('ul#navbar li a')[0].text_content())
     return opener
 
 
@@ -87,7 +87,7 @@ def load_ff_sessions(session_filename):
         try: 
             json_data = json.loads(open(session_filename, 'rb').read())
         except ValueError as e:
-            print 'Error parsing session JSON:', str(e)
+            print('Error parsing session JSON:', str(e))
         else:
             for window in json_data.get('windows', []):
                 for cookie in window.get('cookies', []):
@@ -100,7 +100,7 @@ def load_ff_sessions(session_filename):
                         None, None, {})
                     cj.set_cookie(c)
     else:
-        print 'Session filename does not exist:', session_filename
+        print('Session filename does not exist:', session_filename)
     return cj
 
 
